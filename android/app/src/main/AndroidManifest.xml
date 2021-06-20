@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.moreno_chat_userapp">
    <application
-        android:label="moreno_chat_userapp"
+        android:label="MORENO"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

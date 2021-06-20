@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "534187847993",
+    "project_id": "chat-app-22c94",
+    "storage_bucket": "chat-app-22c94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534187847993:android:831d4839b73b0519cf38e8",
+        "android_client_info": {
+          "package_name": "com.des1yny.moreno_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534187847993-38dc6sgf7ph7m6hetna1lnsu7nl031ia.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0bWn7BPbKgANDgG3vXAfYsQCmADgi6p8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534187847993-38dc6sgf7ph7m6hetna1lnsu7nl031ia.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534187847993:android:fd6c1bf7c934d2c9cf38e8",
+        "android_client_info": {
+          "package_name": "com.des1yny.moreno_chat_userapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534187847993-38dc6sgf7ph7m6hetna1lnsu7nl031ia.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0bWn7BPbKgANDgG3vXAfYsQCmADgi6p8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534187847993-38dc6sgf7ph7m6hetna1lnsu7nl031ia.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
