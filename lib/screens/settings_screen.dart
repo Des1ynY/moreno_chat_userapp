@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:moreno_chat_userapp/components/general_comps.dart';
 
+import '/components/general_comps.dart';
 import '/theme_data.dart';
 import '/custom_icons.dart';
 import '/models/user_model.dart';
