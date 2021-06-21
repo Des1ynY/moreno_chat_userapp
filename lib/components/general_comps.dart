@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:moreno_chat_userapp/screens/settings_screen.dart';
-import 'package:moreno_chat_userapp/theme_data.dart';
+
+import '/theme_data.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     Key? key,
     required this.title,
-    required this.icon,
-    required this.email,
-    this.enableSettings = false,
-    this.enableBack = false,
   }) : super(key: key);
 
-  final bool enableSettings, enableBack;
-  final String title, email;
-  final IconData icon;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -36,55 +30,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: enableBack ? 5 : 20,
-                    ),
-                    enableBack
-                        ? Container(
-                            child: IconButton(
-                              icon: Icon(Icons.keyboard_arrow_left),
-                              iconSize: 35,
-                              color: Colors.white,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          )
-                        : Container(),
                     Text(title, style: headingText),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 35,
+                    Container(
+                      height: 70,
+                      margin: EdgeInsets.only(left: 10),
+                      child: Image.asset('assets/lion_logo_white.png'),
                     ),
                   ],
                 ),
               ),
-              enableSettings
-                  ? Container(
-                      margin: EdgeInsets.only(right: 5),
-                      child: IconButton(
-                          icon: Icon(Icons.settings),
-                          iconSize: 35,
-                          color: Colors.white,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        SettingsScreen(email)));
-                          }),
-                    )
-                  : Container(),
             ],
           ),
         ],
@@ -93,5 +53,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(71);
+  Size get preferredSize => Size.fromHeight(90);
 }

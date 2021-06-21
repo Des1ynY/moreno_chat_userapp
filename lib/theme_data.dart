@@ -24,9 +24,9 @@ var commonText = TextStyle(
 );
 
 var headingText = TextStyle(
-  fontSize: 24,
+  fontSize: 26,
   color: Colors.white,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w900,
 );
 
 class GradientMask extends StatelessWidget {

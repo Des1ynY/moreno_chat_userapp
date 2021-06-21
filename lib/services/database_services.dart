@@ -6,7 +6,7 @@ import '/models/user_model.dart';
 class UsersDB {
   var _usersRef = FirebaseFirestore.instance.collection('users');
 
-  void addUserToDB(UserModel user) async {
+  addUserToDB(UserModel user) async {
     await _usersRef.doc(user.email).set(user.toMap(), SetOptions(merge: true));
   }
 

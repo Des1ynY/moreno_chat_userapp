@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:moreno_chat_userapp/theme_data.dart';
+
+import '/theme_data.dart';
 
 Container logoTrans() {
   return Container(
@@ -29,7 +30,7 @@ Container actionButton(
     double? fontSize = 24}) {
   return Container(
     height: 50,
-    width: 240,
+    width: 260,
     decoration: BoxDecoration(
       gradient: mainGradient,
       borderRadius: BorderRadius.circular(10),

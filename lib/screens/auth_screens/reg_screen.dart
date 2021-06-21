@@ -44,14 +44,14 @@ class _SignUpState extends State<SignUp> {
               key: formKey,
               child: Column(
                 children: [
-                  label(text: 'Имя'),
+                  label(text: 'Логин'),
                   Container(
                     width: double.infinity,
                     child: TextFormField(
                       keyboardType: TextInputType.name,
                       onChanged: (value) => _name = value,
                       validator: (value) =>
-                          value?.length != 0 ? null : 'Введите имя',
+                          value?.length != 0 ? null : 'Введите логин',
                     ),
                   ),
                   SizedBox(

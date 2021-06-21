@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Expanded(
+            Flexible(
               child: Container(
                 child: messagesLoaded ? chatMessages() : Container(),
               ),
@@ -234,10 +234,9 @@ class ChatBottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Expanded(
+          Flexible(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 15),
-              height: 43,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(
@@ -252,9 +251,12 @@ class ChatBottomBar extends StatelessWidget {
                     color: textColor,
                   ),
                 ),
+                textCapitalization: TextCapitalization.sentences,
                 keyboardType: TextInputType.text,
                 cursorColor: Color(0xFF5CE27F),
                 controller: textControl,
+                minLines: 1,
+                maxLines: 20,
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black.withOpacity(0.8),
@@ -273,8 +275,8 @@ class ChatBottomBar extends StatelessWidget {
 
   Widget bottomBarButton(IconData icon, VoidCallback onPress) {
     return Container(
-      width: 43,
-      height: 43,
+      width: 50,
+      height: 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
         border: Border.all(
@@ -284,6 +286,7 @@ class ChatBottomBar extends StatelessWidget {
       child: GradientMask(
         child: IconButton(
           icon: Icon(icon),
+          iconSize: 30,
           color: Colors.white,
           onPressed: onPress,
         ),
