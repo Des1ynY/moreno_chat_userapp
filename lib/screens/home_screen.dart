@@ -78,19 +78,19 @@ class _ChatsScreenState extends State<ChatsScreen> {
               ),
               child: isOn ? thisUserInfo() : Container(),
             ),
+            isOn ? enterTheChatRoom() : Container(),
             settingsOption(
                 'Аккаунт',
                 CircleAvatar(
                   radius: 17,
                   backgroundColor: Colors.white,
-                  backgroundImage: AssetImage('assets/common_avatar_blue.png'),
+                  backgroundImage: AssetImage('assets/common_avatar_green.png'),
                 ), () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AccountSettingsScreen(user)));
             }),
-            isOn ? enterTheChatRoom() : Container(),
             settingsOption(
               'Выйти из аккаунта',
               Icon(
@@ -122,7 +122,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                       ? settingsOption(
                           'Войти в чат',
                           Icon(CustomIcons.chat_1,
-                              size: 30, color: Color(0xFF5ED6B6)),
+                              size: 30, color: Color(0xFF64C5E5)),
                           () {
                             String chatID =
                                 getChatRoomID('admin@admin.com', email);
@@ -142,9 +142,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                       : Container();
                 },
               )
-            : Center(
-                child: CircularProgressIndicator(),
-              );
+            : Container();
       },
     );
   }

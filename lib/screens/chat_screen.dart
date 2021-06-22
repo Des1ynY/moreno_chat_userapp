@@ -11,6 +11,7 @@ import '/theme_data.dart';
 String messageID = '';
 String email = '';
 String chatID = '';
+late DateTime lastMessageTime;
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({
@@ -83,12 +84,15 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   var ds = snapshot.data?.docs.elementAt(index);
                   var messageInfo = ds?.data();
+                  if (index == 0) {
+                    var message = Message.fromJson(messageInfo);
+                    lastMessageTime = message.timeSend.toDate();
+                  }
                   return messageTile(
                       text: messageInfo?['text'],
                       time: messageInfo?['timeSend'],
                       yours: messageInfo?['sender'] == email);
-                },
-              )
+                })
             : Center(
                 child: CircularProgressIndicator(),
               );
@@ -101,7 +105,7 @@ class _ChatScreenState extends State<ChatScreen> {
     required Timestamp time,
     required bool yours,
   }) {
-    return Column(
+    Widget res = Column(
       children: [
         Row(
           mainAxisAlignment:
@@ -170,6 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
         )
       ],
     );
+    return res;
   }
 }
 

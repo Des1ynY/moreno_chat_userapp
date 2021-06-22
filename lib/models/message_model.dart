@@ -11,6 +11,14 @@ class Message {
     required this.timeSend,
   });
 
+  factory Message.fromJson(Map<String, dynamic>? json) {
+    return Message(
+      text: json?['text'],
+      sender: json?['sender'],
+      timeSend: json?['timeSend'],
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'text': text,

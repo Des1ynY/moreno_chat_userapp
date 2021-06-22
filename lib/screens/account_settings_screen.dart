@@ -7,10 +7,13 @@ import '/theme_data.dart';
 import '/custom_icons.dart';
 
 late UserModel user;
+late String avatar, name;
 
 class AccountSettingsScreen extends StatefulWidget {
   AccountSettingsScreen(UserModel userModel) {
     user = userModel;
+    avatar = user.avatar;
+    name = user.name;
   }
 
   @override
@@ -34,7 +37,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   radius: 80,
                   backgroundColor: Colors.white,
                   backgroundImage: AssetImage('assets/common_avatar_blue.png'),
-                  foregroundImage: NetworkImage(user.avatar),
+                  foregroundImage: NetworkImage(avatar),
                 ),
               ),
               true,
@@ -42,7 +45,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             AccountSettingsOption(
               'Логин',
               Text(
-                user.name,
+                name,
                 style: TextStyle(
                     fontWeight: FontWeight.w300,
                     fontSize: 16,
@@ -165,6 +168,8 @@ class _AccountSettingsOptionState extends State<AccountSettingsOption> {
                             color: textColor.withOpacity(0.5)),
                         border: InputBorder.none),
                     controller: textControl,
+                    keyboardType:
+                        editingField ? TextInputType.url : TextInputType.name,
                     autofocus: true,
                     style: TextStyle(
                       color: editingField ? Colors.blue.shade300 : Colors.black,
@@ -176,31 +181,14 @@ class _AccountSettingsOptionState extends State<AccountSettingsOption> {
                     ),
                     onFieldSubmitted: (val) {
                       submit();
-                      setState(() => editing = false);
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Flexible(
-                            child: Container(
-                              child: Text(editingField
-                                  ? 'Фото профиля изменено!'
-                                  : 'Логин успешно изменен!'),
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('ОК'),
-                            ),
-                          ],
-                        ),
-                      );
+                      setState(() {
+                        editing = false;
+                        editingField ? avatar = val : name = val;
+                      });
                     },
                   ),
                 )
-              : field,
+              : showCurrentState(editingField ? avatar : name),
         ],
       ),
     );
@@ -220,6 +208,23 @@ class _AccountSettingsOptionState extends State<AccountSettingsOption> {
 
   String hintText() {
     return editingField ? 'Вставь ссылку на картинку' : user.name;
+  }
+
+  Widget showCurrentState(String value) {
+    return editingField
+        ? Center(
+            child: CircleAvatar(
+              radius: 80,
+              backgroundColor: Colors.white,
+              backgroundImage: AssetImage('assets/common_avatar_blue.png'),
+              foregroundImage: NetworkImage(avatar),
+            ),
+          )
+        : Text(
+            name,
+            style: TextStyle(
+                fontWeight: FontWeight.w300, fontSize: 16, color: textColor),
+          );
   }
 }
 

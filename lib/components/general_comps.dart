@@ -37,11 +37,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(title, style: headingText),
-                    Container(
-                      height: 70,
-                      margin: EdgeInsets.only(left: 10),
-                      child: Image.asset('assets/lion_logo_white.png'),
-                    ),
                   ],
                 ),
               ),
@@ -53,5 +48,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(90);
+  Size get preferredSize => Size.fromHeight(70);
 }
