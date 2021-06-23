@@ -67,10 +67,36 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Flexible(
-                        child: Container(
-                          child: Text(
-                              'На электронный адрес ${user.email} было отпаравлено письмо для сброса пароля.'),
+                      contentPadding:
+                          EdgeInsets.only(top: 20, left: 20, right: 20),
+                      content: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'На электронный адрес ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${user.email}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.blue.shade400,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' было отправлено письмо для сброса пароля',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       actions: [
@@ -144,7 +170,10 @@ class _AccountSettingsOptionState extends State<AccountSettingsOption> {
                 ),
               ),
               TextButton(
-                onPressed: () => setState(() => editing = !editing),
+                onPressed: () {
+                  textControl.text = '';
+                  setState(() => editing = !editing);
+                },
                 child: Text(
                   editing ? 'Отменить' : 'Изменить',
                   style: TextStyle(
@@ -158,9 +187,9 @@ class _AccountSettingsOptionState extends State<AccountSettingsOption> {
           ),
           editing
               ? Container(
-                  height: 30,
                   child: TextFormField(
                     decoration: InputDecoration(
+                        counterText: '',
                         hintText: hintText(),
                         hintStyle: TextStyle(
                             fontSize: 16,
@@ -171,6 +200,9 @@ class _AccountSettingsOptionState extends State<AccountSettingsOption> {
                     keyboardType:
                         editingField ? TextInputType.url : TextInputType.name,
                     autofocus: true,
+                    minLines: 1,
+                    maxLines: 10,
+                    maxLength: editingField ? 300 : 25,
                     style: TextStyle(
                       color: editingField ? Colors.blue.shade300 : Colors.black,
                       decoration: editingField

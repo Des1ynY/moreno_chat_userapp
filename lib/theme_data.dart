@@ -1,12 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 var textColor = Color(0xff999999);
 var strokeColor = Color(0xFFE1E1E1);
-
-DocumentReference firebaseDoc(String email) =>
-    FirebaseFirestore.instance.collection('users').doc(email);
 
 var mainGradient = LinearGradient(
   begin: Alignment.bottomLeft,
@@ -39,5 +35,13 @@ class GradientMask extends StatelessWidget {
       shaderCallback: (bounds) => mainGradient.createShader(bounds),
       child: child,
     );
+  }
+}
+
+class NoGlowScrollEffect extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }

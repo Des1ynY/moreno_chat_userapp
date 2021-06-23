@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:random_string/random_string.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -11,7 +12,7 @@ import '/theme_data.dart';
 String messageID = '';
 String email = '';
 String chatID = '';
-late DateTime lastMessageTime;
+ChatAppBar? appBar;
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({
@@ -22,6 +23,7 @@ class ChatScreen extends StatefulWidget {
   }) {
     email = userEmail;
     chatID = chatroomID;
+    appBar = ChatAppBar(friend.name, friend.avatar);
   }
 
   final UserModel friend;
@@ -55,11 +57,11 @@ class _ChatScreenState extends State<ChatScreen> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: ChatAppBar(friend.name, friend.avatar),
+        appBar: appBar,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Flexible(
+            Expanded(
               child: Container(
                 child: messagesLoaded ? chatMessages() : Container(),
               ),
@@ -84,11 +86,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   var ds = snapshot.data?.docs.elementAt(index);
                   var messageInfo = ds?.data();
-                  if (index == 0) {
-                    var message = Message.fromJson(messageInfo);
-                    lastMessageTime = message.timeSend.toDate();
-                  }
-                  return messageTile(
+
+                  return MessageTile(
                       text: messageInfo?['text'],
                       time: messageInfo?['timeSend'],
                       yours: messageInfo?['sender'] == email);
@@ -99,90 +98,121 @@ class _ChatScreenState extends State<ChatScreen> {
       },
     );
   }
+}
 
-  Widget messageTile({
-    required String text,
-    required Timestamp time,
-    required bool yours,
-  }) {
-    Widget res = Column(
-      children: [
-        Row(
-          mainAxisAlignment:
-              yours ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
-            Flexible(
-              child: Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.only(
-                    top: 7, left: yours ? 60 : 20, right: yours ? 20 : 60),
-                decoration: BoxDecoration(
-                  gradient: yours
-                      ? mainGradient
-                      : LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.bottomLeft,
-                          colors: [
-                            Color(0xFFEFEFEF),
-                            Color(0xFFEFEFEF),
-                          ],
-                        ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                    bottomLeft:
-                        yours ? Radius.circular(20) : Radius.circular(0),
-                    bottomRight:
-                        yours ? Radius.circular(0) : Radius.circular(20),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        child: Text(
-                          text,
-                          style: TextStyle(
-                            color: yours ? Colors.white : Color(0xFF1A1A1A),
-                            fontSize: 16,
-                          ),
+class MessageTile extends StatefulWidget {
+  MessageTile({required this.text, required this.time, required this.yours});
+
+  final String text;
+  final Timestamp time;
+  final bool yours;
+
+  @override
+  _MessageTileState createState() => _MessageTileState();
+}
+
+class _MessageTileState extends State<MessageTile> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+          top: 7, left: widget.yours ? 60 : 20, right: widget.yours ? 20 : 60),
+      child: Column(
+        crossAxisAlignment:
+            widget.yours ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment:
+                widget.yours ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Flexible(
+                child: RawMaterialButton(
+                  constraints: BoxConstraints(minWidth: 0),
+                  onPressed: () {},
+                  onLongPress: () {
+                    Clipboard.setData(ClipboardData(text: widget.text));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: Duration(seconds: 1),
+                        content: Text('Текст скопирован!'),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      gradient: widget.yours
+                          ? mainGradient
+                          : LinearGradient(
+                              colors: [
+                                Color(0xFFEFEFEF),
+                                Color(0xFFEFEFEF),
+                              ],
+                            ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                        bottomLeft: widget.yours
+                            ? Radius.circular(20)
+                            : Radius.circular(0),
+                        bottomRight: widget.yours
+                            ? Radius.circular(0)
+                            : Radius.circular(20),
+                      ),
+                    ),
+                    child: Container(
+                      child: Text(
+                        widget.text,
+                        style: TextStyle(
+                          color:
+                              widget.yours ? Colors.white : Color(0xFF1A1A1A),
+                          fontSize: 16,
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
-            )
-          ],
-        ),
-        Row(
-          mainAxisAlignment:
-              yours ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: Text(
-                sprintf('%d:%02d', [time.toDate().hour, time.toDate().minute]),
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 12,
+            ],
+          ),
+          Row(
+            mainAxisAlignment:
+                widget.yours ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: 3),
+                child: Text(
+                  getTimeInString(widget.time.toDate()),
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 12,
+                  ),
                 ),
-              ),
-            )
-          ],
-        )
-      ],
+              )
+            ],
+          )
+        ],
+      ),
     );
-    return res;
   }
+
+  String getTimeInString(DateTime time) =>
+      sprintf('%d:%02d', [time.hour, time.minute]);
 }
 
-class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ChatAppBar(this.name, this.avatar, {Key? key}) : super(key: key);
+class ChatAppBar extends StatefulWidget implements PreferredSizeWidget {
+  ChatAppBar(this.name, this.avatar);
 
   final String name, avatar;
 
+  @override
+  _ChatAppBarState createState() => _ChatAppBarState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(80);
+}
+
+class _ChatAppBarState extends State<ChatAppBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -197,34 +227,36 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            width: 20,
+          Row(
+            children: [
+              SizedBox(
+                width: 20,
+              ),
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage('assets/common_avatar_blue.png'),
+                foregroundImage: NetworkImage(widget.avatar),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                widget.name,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.white,
-            backgroundImage: AssetImage('assets/common_avatar_blue.png'),
-            foregroundImage: NetworkImage(avatar),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
-          )
         ],
       ),
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(80);
 }
 
 class ChatBottomBar extends StatelessWidget {

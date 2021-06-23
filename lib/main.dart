@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:moreno_chat_userapp/screens/auth_screens/auth_screen.dart';
-import 'package:moreno_chat_userapp/screens/home_screen.dart';
-import 'package:moreno_chat_userapp/services/auth_services.dart';
 import 'package:provider/provider.dart';
+
+import 'theme_data.dart';
+import 'screens/auth_screens/auth_screen.dart';
+import 'screens/home_screen.dart';
+import 'services/auth_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +34,10 @@ class MyApp extends StatelessWidget {
                 context.read<AuthServices>().authStateChanges()),
       ],
       child: MaterialApp(
+        builder: (context, child) {
+          return ScrollConfiguration(
+              behavior: NoGlowScrollEffect(), child: child ?? Container());
+        },
         title: 'MORENO',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

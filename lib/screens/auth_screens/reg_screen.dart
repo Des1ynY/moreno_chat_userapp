@@ -17,85 +17,99 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   var authService = AuthServices();
   var dbServices = UsersDB();
-  bool isLoading = false;
+  bool _isLoading = false;
   String _email = '', _password = '', _name = '';
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  FocusNode _loginNode = FocusNode(),
+      _emailNode = FocusNode(),
+      _passwordNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        padding: EdgeInsets.all(40),
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Spacer(
-              flex: 2,
-            ),
-            logoTrans(),
-            Spacer(
-              flex: 3,
-            ),
-            Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  label(text: 'Логин'),
-                  Container(
-                    width: double.infinity,
-                    child: TextFormField(
-                      keyboardType: TextInputType.name,
-                      onChanged: (value) => _name = value,
-                      validator: (value) =>
-                          value?.length != 0 ? null : 'Введите логин',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  label(text: 'Почта'),
-                  Container(
-                    width: double.infinity,
-                    child: TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      onChanged: (value) => _email = value,
-                      validator: (value) =>
-                          isValidEmail(value) ? null : 'Неверная почта',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 7,
-                  ),
-                  label(text: 'Пароль'),
-                  Container(
-                    width: double.infinity,
-                    child: TextFormField(
-                      obscureText: true,
-                      onChanged: (value) => _password = value,
-                      validator: (value) =>
-                          isValidPassword(value) ? null : 'Неверный пароль',
-                    ),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
+        child: Container(
+          padding: EdgeInsets.all(40),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Spacer(
+                flex: 2,
               ),
-            ),
-            Spacer(
-              flex: 4,
-            ),
-            actionButton(
-              text: 'Зарегистрироваться',
-              fontSize: 20,
-              onPress: () => submit(),
-              isLoading: isLoading,
-            ),
-            Spacer(
-              flex: 7,
-            ),
-          ],
+              logoTrans(),
+              Spacer(
+                flex: 3,
+              ),
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    label(text: 'Логин'),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: TextFormField(
+                        focusNode: _loginNode,
+                        keyboardType: TextInputType.name,
+                        onChanged: (value) => _name = value,
+                        validator: (value) =>
+                            value?.length != 0 ? null : 'Введите логин',
+                        onFieldSubmitted: (val) {
+                          FocusScope.of(context).requestFocus(_emailNode);
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    label(text: 'Почта'),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: TextFormField(
+                        focusNode: _emailNode,
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (value) => _email = value,
+                        validator: (value) =>
+                            isValidEmail(value) ? null : 'Неверная почта',
+                        onFieldSubmitted: (val) {
+                          FocusScope.of(context).requestFocus(_passwordNode);
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    label(text: 'Пароль'),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: TextFormField(
+                        focusNode: _passwordNode,
+                        obscureText: true,
+                        onChanged: (value) => _password = value,
+                        validator: (value) =>
+                            isValidPassword(value) ? null : 'Неверный пароль',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Spacer(
+                flex: 4,
+              ),
+              actionButton(
+                text: 'Зарегистрироваться',
+                fontSize: 20,
+                onPress: () => submit(),
+                isLoading: _isLoading,
+              ),
+              Spacer(
+                flex: 7,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -105,7 +119,7 @@ class _SignUpState extends State<SignUp> {
     var formIsValid = formKey.currentState?.validate() ?? false;
 
     if (formIsValid) {
-      setState(() => isLoading = true);
+      setState(() => _isLoading = true);
       authService.signUp(_email, _password);
       var dbUser = UserModel(
         email: _email,
@@ -125,14 +139,9 @@ class _SignUpState extends State<SignUp> {
 
       ChatsDB().enterChatRoom(chatroomID, chatRoomInfo: chatRoomInfo);
 
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              userEmail: _email,
-            ),
-          ),
-          (route) => false);
+      authService.signIn(_email, _password);
+
+      Navigator.pop(context);
     }
   }
 }

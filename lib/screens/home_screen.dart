@@ -152,56 +152,58 @@ class _ChatsScreenState extends State<ChatsScreen> {
       stream: userDB,
       builder: (context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        return snapshot.hasData
-            ? ListView.builder(
-                itemCount: 1,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var ds = snapshot.data?.docs.first;
-                  user = UserModel.fromJson(ds?.data());
-                  return userInfoDisplay(user);
-                },
-              )
-            : Center(
-                child: CircularProgressIndicator(),
-              );
+        if (snapshot.hasData) {
+          var ds = snapshot.data?.docs.first;
+          user = UserModel.fromJson(ds?.data());
+          return UserInfo();
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
       },
     );
   }
 }
 
-Widget userInfoDisplay(UserModel user) {
-  return Container(
-    child: Column(
-      children: [
-        CircleAvatar(
-          radius: 80,
-          backgroundColor: Colors.white,
-          backgroundImage: AssetImage('assets/common_avatar_blue.png'),
-          foregroundImage: NetworkImage(user.avatar),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Text(
-          user.name,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
+class UserInfo extends StatelessWidget {
+  const UserInfo({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 80,
+            backgroundColor: Colors.white,
+            backgroundImage: AssetImage('assets/common_avatar_blue.png'),
+            foregroundImage: NetworkImage(user.avatar),
           ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          user.email,
-          style: TextStyle(
-            color: textColor,
+          SizedBox(
+            height: 20,
           ),
-        ),
-      ],
-    ),
-  );
+          Text(
+            user.name,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            user.email,
+            style: TextStyle(
+              color: textColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 Widget settingsOption(String label, Widget icon, VoidCallback onPress) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moreno_chat_userapp/screens/auth_screens/auth_screen.dart';
 
 import '/services/auth_services.dart';
 import '/components/auth_screens_comps.dart';
@@ -32,7 +33,7 @@ class _PasswordRestoreState extends State<PasswordRestore> {
               ),
               logoTrans(),
               Spacer(
-                flex: 5,
+                flex: 4,
               ),
               Form(
                 key: formKey,
@@ -75,7 +76,53 @@ class _PasswordRestoreState extends State<PasswordRestore> {
     if (isValidForm) {
       setState(() => isLoading = true);
       authServices.resetPassword(email: _email);
-      Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          contentPadding: EdgeInsets.only(top: 20, left: 20, right: 20),
+          content: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'На электронный адрес ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                TextSpan(
+                  text: '$_email',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.blue.shade400,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                TextSpan(
+                  text: ' было отправлено письмо для сброса пароля',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignIn()),
+                    (route) => false);
+              },
+              child: Text('ОК'),
+            )
+          ],
+        ),
+      );
     }
   }
 }
