@@ -59,7 +59,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
   void onLoad() async {
     chatroomsDB = await ChatsDB().getAllChatRooms(email);
     userDB = await UsersDB().getUserByEmail(email);
-    usersDB = await UsersDB().getUserByEmail('admin@admin.com');
+    usersDB = await UsersDB().getUserByEmail(adminEmail);
     setState(() {
       isOn = true;
     });
@@ -124,9 +124,17 @@ class _ChatsScreenState extends State<ChatsScreen> {
                           Icon(CustomIcons.chat_1,
                               size: 30, color: Color(0xFF64C5E5)),
                           () {
-                            String chatID =
-                                getChatRoomID('admin@admin.com', email);
-                            ChatsDB().enterChatRoom(chatID);
+                            String chatID = getChatRoomID(adminEmail, email);
+
+                            var chatRoomInfo = <String, dynamic>{
+                              'users': [adminEmail, email],
+                              'sender': adminEmail,
+                              'text': '',
+                              'timeSend': Timestamp.now()
+                            };
+
+                            ChatsDB().enterChatRoom(chatID,
+                                chatRoomInfo: chatRoomInfo);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

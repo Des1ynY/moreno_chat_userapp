@@ -45,3 +45,5 @@ class NoGlowScrollEffect extends ScrollBehavior {
     return child;
   }
 }
+
+String adminEmail = 'admin@admin.com';

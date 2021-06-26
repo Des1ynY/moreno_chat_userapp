@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:moreno_chat_userapp/screens/auth_screens/auth_screen.dart';
 
 import '/services/auth_services.dart';
 import '/components/auth_screens_comps.dart';
@@ -113,10 +112,7 @@ class _PasswordRestoreState extends State<PasswordRestore> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignIn()),
-                    (route) => false);
+                Navigator.popUntil(context, (route) => false);
               },
               child: Text('ОК'),
             )

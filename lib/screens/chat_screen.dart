@@ -9,6 +9,7 @@ import '/models/message_model.dart';
 import '/services/database_services.dart';
 import '/theme_data.dart';
 
+String lastMessageID = '';
 String messageID = '';
 String email = '';
 String chatID = '';
@@ -86,11 +87,21 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   var ds = snapshot.data?.docs.elementAt(index);
                   var messageInfo = ds?.data();
-
+                  var message = Message.fromJson(messageInfo);
+                  if (index == 0) {
+                    lastMessageID = message.id;
+                  }
+                  if (message.sender != email && message.isNew) {
+                    updateIsRead(message.id);
+                  }
+                  if (message.id == lastMessageID) {
+                    ChatsDB().updateLastMessage(chatID, message);
+                  }
                   return MessageTile(
                       text: messageInfo?['text'],
                       time: messageInfo?['timeSend'],
-                      yours: messageInfo?['sender'] == email);
+                      yours: messageInfo?['sender'] == email,
+                      isNew: messageInfo?['isNew']);
                 })
             : Center(
                 child: CircularProgressIndicator(),
@@ -100,12 +111,20 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
+updateIsRead(String id) async {
+  await ChatsDB().isRead(id, chatID, {'isNew': false});
+}
+
 class MessageTile extends StatefulWidget {
-  MessageTile({required this.text, required this.time, required this.yours});
+  MessageTile(
+      {required this.text,
+      required this.time,
+      required this.yours,
+      required this.isNew});
 
   final String text;
   final Timestamp time;
-  final bool yours;
+  final bool yours, isNew;
 
   @override
   _MessageTileState createState() => _MessageTileState();
@@ -125,6 +144,19 @@ class _MessageTileState extends State<MessageTile> {
             mainAxisAlignment:
                 widget.yours ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
+              widget.yours
+                  ? widget.isNew
+                      ? Container(
+                          width: 8,
+                          height: 8,
+                          margin: EdgeInsets.only(right: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            gradient: mainGradient,
+                          ),
+                        )
+                      : Container()
+                  : Container(),
               Flexible(
                 child: RawMaterialButton(
                   constraints: BoxConstraints(minWidth: 0),
@@ -173,6 +205,18 @@ class _MessageTileState extends State<MessageTile> {
                   ),
                 ),
               ),
+              !widget.yours
+                  ? widget.isNew
+                      ? Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            gradient: mainGradient,
+                          ),
+                        )
+                      : Container()
+                  : Container(),
             ],
           ),
           Row(
@@ -343,12 +387,15 @@ class ChatBottomBar extends StatelessWidget {
         text: textControl.text,
         sender: email,
         timeSend: timeSend,
+        isNew: true,
+        id: messageID,
       );
 
       ChatsDB().addMessage(chatID, messageID, message).then((value) {
         ChatsDB().updateLastMessage(chatID, message);
 
         textControl.text = '';
+        lastMessageID = messageID;
         messageID = '';
       });
     }

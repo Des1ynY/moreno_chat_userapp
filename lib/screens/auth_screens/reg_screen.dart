@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '/models/user_model.dart';
-import '/screens/home_screen.dart';
 import '/services/database_services.dart';
 import '/services/auth_services.dart';
 import '/components/auth_screens_comps.dart';
@@ -123,21 +121,11 @@ class _SignUpState extends State<SignUp> {
       authService.signUp(_email, _password);
       var dbUser = UserModel(
         email: _email,
-        name: _name,
+        name: _name.trim(),
         avatar:
             'https://firebasestorage.googleapis.com/v0/b/chat-app-22c94.appspot.com/o/common_avatar_blue.png?alt=media&token=e9f86dc4-6638-47fe-8fa8-496bffdbdfdc',
       );
       dbServices.addUserToDB(dbUser);
-
-      String chatroomID = getChatRoomID('admin@admin.com', _email);
-      var chatRoomInfo = <String, dynamic>{
-        'users': ['admin@admin.com', _email],
-        'sender': 'admin@admin.com',
-        'text': 'Рад приветствовать!',
-        'timeSend': Timestamp.now()
-      };
-
-      ChatsDB().enterChatRoom(chatroomID, chatRoomInfo: chatRoomInfo);
 
       authService.signIn(_email, _password);
 

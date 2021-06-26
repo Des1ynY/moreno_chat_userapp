@@ -10,6 +10,10 @@ class UsersDB {
     await _usersRef.doc(user.email).set(user.toMap(), SetOptions(merge: true));
   }
 
+  updateUserTokenByEmail(Map<String, dynamic> userInfo, String email) async {
+    await _usersRef.doc(email).set(userInfo, SetOptions(merge: true));
+  }
+
   getUserByName(String name) async {
     return _usersRef.where('name', isEqualTo: name).snapshots();
   }
@@ -32,6 +36,15 @@ class ChatsDB {
         .collection('chat')
         .doc(messageID)
         .set(message.toMap());
+  }
+
+  isRead(
+      String messageID, String chatroomID, Map<String, dynamic> wasRead) async {
+    return _chatsRef
+        .doc(chatroomID)
+        .collection('chat')
+        .doc(messageID)
+        .set(wasRead, SetOptions(merge: true));
   }
 
   updateLastMessage(String chatRoomID, Message lastMessage) async {
@@ -61,5 +74,9 @@ class ChatsDB {
     } else {
       return _chatsRef.doc(chatRoomID).set(chatRoomInfo ?? {});
     }
+  }
+
+  deleteChatRoom(String chatRoomID) async {
+    return _chatsRef.doc(chatRoomID).delete();
   }
 }
